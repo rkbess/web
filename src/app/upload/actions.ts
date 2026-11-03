@@ -2,6 +2,7 @@
 
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
+import { blobAuth } from "@/lib/blob";
 
 const MAX_SIZE = 4 * 1024 * 1024;
 // SVG is excluded because it can carry scripts.
@@ -34,7 +35,8 @@ export async function uploadImage(
   let blob;
   try {
     blob = await put(`images/upload.${ext}`, file, {
-      access: "private",
+      ...blobAuth,
+      access: "public",
       contentType: file.type,
       addRandomSuffix: true,
     });

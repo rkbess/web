@@ -1,6 +1,8 @@
 import { Suspense } from "react";
+import Image from "next/image";
 import { connection } from "next/server";
 import { list } from "@vercel/blob";
+import { blobAuth } from "@/lib/blob";
 import UploadForm from "./upload-form";
 
 export const metadata = { title: "Upload | My Website" };
@@ -10,7 +12,7 @@ async function Gallery() {
 
   let blobs;
   try {
-    ({ blobs } = await list({ prefix: "images/" }));
+    ({ blobs } = await list({ ...blobAuth, prefix: "images/" }));
   } catch (err) {
     console.error("Failed to list images", err);
     return <p className="text-red-600">Could not load images.</p>;
@@ -22,20 +24,17 @@ async function Gallery() {
 
   return (
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-      {blobs.map((blob) => {
-        const src = `/api/images?pathname=${encodeURIComponent(blob.pathname)}`;
-        return (
-          <a key={blob.pathname} href={src} target="_blank" rel="noopener noreferrer">
-            {/* eslint-disable-next-line @next/next/no-img-element -- served by our own route */}
-            <img
-              src={src}
-              alt={blob.pathname}
-              loading="lazy"
-              className="aspect-square w-full rounded-lg object-cover"
-            />
-          </a>
-        );
-      })}
+      {blobs.map((blob) => (
+        <a key={blob.pathname} href={blob.url} target="_blank" rel="noopener noreferrer">
+          <Image
+            src={blob.url}
+            alt={blob.pathname}
+            width={300}
+            height={300}
+            className="aspect-square w-full rounded-lg object-cover"
+          />
+        </a>
+      ))}
     </div>
   );
 }
