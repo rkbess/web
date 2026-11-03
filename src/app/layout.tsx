@@ -33,6 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <div className="flex gap-6 text-sm">
               <Link href="/" className="hover:underline">Home</Link>
               <Link href="/about" className="hover:underline">About</Link>
+              <Link href="/upload" className="hover:underline">Upload</Link>
               <Link href="/contact" className="hover:underline">Contact</Link>
             </div>
           </nav>
