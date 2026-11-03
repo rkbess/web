@@ -8,7 +8,23 @@ export const metadata = { title: "Upload | My Website" };
 
 async function Gallery() {
   await connection();
-  const { blobs } = await list({ prefix: "images/" });
+
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return (
+      <p className="text-red-600">
+        Image storage is not configured. Connect a Vercel Blob store to this
+        project and redeploy.
+      </p>
+    );
+  }
+
+  let blobs;
+  try {
+    ({ blobs } = await list({ prefix: "images/" }));
+  } catch (err) {
+    console.error("Failed to list images", err);
+    return <p className="text-red-600">Could not load images.</p>;
+  }
 
   if (blobs.length === 0) {
     return <p className="text-zinc-600 dark:text-zinc-400">No images yet.</p>;

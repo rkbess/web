@@ -31,11 +31,21 @@ export async function uploadImage(
     return { error: "Image must be 4 MB or smaller." };
   }
 
-  const blob = await put(`images/upload.${ext}`, file, {
-    access: "public",
-    contentType: file.type,
-    addRandomSuffix: true,
-  });
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    return { error: "Image storage is not configured." };
+  }
+
+  let blob;
+  try {
+    blob = await put(`images/upload.${ext}`, file, {
+      access: "public",
+      contentType: file.type,
+      addRandomSuffix: true,
+    });
+  } catch (err) {
+    console.error("Upload failed", err);
+    return { error: "Upload failed. Please try again." };
+  }
 
   revalidatePath("/upload");
   return { url: blob.url };
