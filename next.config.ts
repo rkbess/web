@@ -10,11 +10,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "4.2mb",
     },
   },
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
-    ],
-  },
   turbopack: {
     rules: {
       "*.css": {

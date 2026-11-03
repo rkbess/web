@@ -26,7 +26,7 @@ export default function UploadForm() {
         {pending ? "Uploading..." : "Upload"}
       </button>
       {state.error && <p className="text-sm text-red-600">{state.error}</p>}
-      {state.url && <p className="text-sm text-green-600">Uploaded!</p>}
+      {state.pathname && <p className="text-sm text-green-600">Uploaded!</p>}
     </form>
   );
 }

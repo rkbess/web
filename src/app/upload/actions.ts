@@ -12,7 +12,7 @@ const ALLOWED_TYPES: Record<string, string> = {
   "image/webp": "webp",
 };
 
-export type UploadState = { error?: string; url?: string };
+export type UploadState = { error?: string; pathname?: string };
 
 export async function uploadImage(
   _prev: UploadState,
@@ -31,14 +31,10 @@ export async function uploadImage(
     return { error: "Image must be 4 MB or smaller." };
   }
 
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return { error: "Image storage is not configured." };
-  }
-
   let blob;
   try {
     blob = await put(`images/upload.${ext}`, file, {
-      access: "public",
+      access: "private",
       contentType: file.type,
       addRandomSuffix: true,
     });
@@ -48,5 +44,5 @@ export async function uploadImage(
   }
 
   revalidatePath("/upload");
-  return { url: blob.url };
+  return { pathname: blob.pathname };
 }
